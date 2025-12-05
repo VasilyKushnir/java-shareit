@@ -10,6 +10,8 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.dto.UpdateItemRequest;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.dal.UserRepository;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.util.List;
@@ -19,27 +21,29 @@ import java.util.List;
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserService userService;
+    private final UserRepository userRepository;
 
     @Override
     public ItemDto create(Long id, CreateItemRequest request) {
-        Item item = ItemMapper.mapToItem(id, request);
-        if (!userService.isUserExist(id)) {
-            throw new NotFoundException("User with id " + id + " was not found, so adding item is impossible");
-        }
-        item = itemRepository.create(item);
+        User owner = userRepository.findById(id)
+                .orElseThrow(() ->
+                        new NotFoundException("User with id " + id + " was not found, so adding item is impossible"));
+        Item item = ItemMapper.mapToItem(request);
+        item.setOwner(owner);
+        item = itemRepository.save(item);
         return ItemMapper.mapToItemDto(item);
     }
 
     @Override
     public ItemDto read(Long id) {
-        return itemRepository.read(id)
+        return itemRepository.findById(id)
                 .map(ItemMapper::mapToItemDto)
                 .orElseThrow(() -> new NotFoundException("Item with id " + id + " does not exist"));
     }
 
     @Override
     public List<ItemDto> readUserItems(Long id) {
-        return itemRepository.readUserItems(id).stream()
+        return itemRepository.findByOwnerId(id).stream()
                 .map(ItemMapper::mapToItemDto)
                 .toList();
     }
@@ -53,13 +57,13 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto update(Long ownerId, Long itemId, UpdateItemRequest request) {
-        Item currentItem = itemRepository.read(itemId)
+        Item currentItem = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Item with id " + itemId + " does not exist"));
-        if (!currentItem.getOwner().equals(ownerId)) {
+        if (!currentItem.getOwner().getId().equals(ownerId)) {
             throw new ForbiddenException("User do not own item with id " + itemId);
         }
         Item updatedItem = ItemMapper.updateItem(currentItem, request);
-        updatedItem = itemRepository.update(updatedItem);
+        updatedItem = itemRepository.save(updatedItem);
         return ItemMapper.mapToItemDto(updatedItem);
     }
 }

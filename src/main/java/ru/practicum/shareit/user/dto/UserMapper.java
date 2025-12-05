@@ -4,10 +4,10 @@ import ru.practicum.shareit.user.User;
 
 public class UserMapper {
     public static User mapToUser(CreateUserRequest request) {
-        return User.builder()
-                .name(request.getName())
-                .email(request.getEmail())
-                .build();
+        User user = new User();
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        return user;
     }
 
     public static UserDto mapToUserDto(User user) {
@@ -19,14 +19,12 @@ public class UserMapper {
     }
 
     public static User updateUser(User user, UpdateUserRequest request) {
-        User.UserBuilder builder = user.toBuilder();
         if (request.hasName()) {
-            builder.name(request.getName());
+            user.setName(request.getName());
         }
         if (request.hasEmail()) {
-            builder.email(request.getEmail());
+            user.setEmail(request.getEmail());
         }
-        return builder.build();
-
+        return user;
     }
 }
