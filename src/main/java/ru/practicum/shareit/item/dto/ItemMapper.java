@@ -1,6 +1,10 @@
 package ru.practicum.shareit.item.dto;
 
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class ItemMapper {
     public static Item mapToItem(CreateItemRequest request) {
@@ -17,6 +21,25 @@ public class ItemMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
+                .build();
+    }
+
+    public static ItemDtoExtended mapToItemDtoExtended(Item item,
+                                                       LocalDateTime lastBooking,
+                                                       LocalDateTime nextBooking,
+                                                       List<Comment> comments) {
+        return ItemDtoExtended.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
+                .available(item.getAvailable())
+                .lastBooking(lastBooking)
+                .nextBooking(nextBooking)
+                .comments(
+                        comments.stream()
+                        .map(CommentMapper::mapToCommentDto)
+                        .toList()
+                )
                 .build();
     }
 
