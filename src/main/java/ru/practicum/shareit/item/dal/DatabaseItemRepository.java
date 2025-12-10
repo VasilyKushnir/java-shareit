@@ -15,11 +15,11 @@ public interface DatabaseItemRepository extends ItemRepository, JpaRepository<It
             from Item as it
             where it.available = true
             AND
-            it.owner.id = ?1
+            it.owner.id = :id
             AND
-            (lower(it.name) like lower(concat('%',?2,'%'))
+            (it.name ilike concat('%',:text,'%')
             OR
-            lower(it.description) like lower(concat('%',?2,'%')))
+            it.description ilike concat('%',:text,'%'))
             """)
     List<Item> searchItems(Long id, String text);
 }

@@ -13,7 +13,7 @@ public interface DatabaseUserRepository extends UserRepository, JpaRepository<Us
     @Query("""
             select us
             from User as us
-            where us.email like %?1%
+            where us.email ilike %:email%
             """)
     Optional<User> findByEmail(String email);
 }

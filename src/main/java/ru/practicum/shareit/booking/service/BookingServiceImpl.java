@@ -17,7 +17,6 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dal.UserRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -58,20 +57,20 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDto> getBookingsForBooker(Long bookerId, BookingState state) {
-        List<Booking> bookingList = new ArrayList<>();
-        if (state == null || state.equals(BookingState.ALL)) {
-            bookingList = bookingRepository.findAllBookingsForBooker(bookerId);
-        } else if (state.equals(BookingState.CURRENT)) {
-            bookingList = bookingRepository.findCurrentBookingsForBooker(bookerId, BookingStatus.APPROVED);
-        } else if (state.equals(BookingState.PAST)) {
-            bookingList = bookingRepository.findPastBookingsForBooker(bookerId, BookingStatus.APPROVED);
-        } else if (state.equals(BookingState.FUTURE)) {
-            bookingList = bookingRepository.findFutureBookingsForBooker(bookerId, BookingStatus.APPROVED);
-        } else if (state.equals(BookingState.WAITING)) {
-            bookingList = bookingRepository.findWaitingBookingsForBooker(bookerId, BookingStatus.WAITING);
-        } else if (state.equals(BookingState.REJECTED)) {
-            bookingList = bookingRepository.findRejectedBookingsForBooker(bookerId, BookingStatus.CANCELED);
-        }
+        List<Booking> bookingList = switch (state) {
+            case BookingState.CURRENT ->
+                    bookingRepository.findCurrentBookingsForBooker(bookerId, BookingStatus.APPROVED);
+            case BookingState.PAST ->
+                    bookingRepository.findPastBookingsForBooker(bookerId, BookingStatus.APPROVED);
+            case BookingState.FUTURE ->
+                    bookingRepository.findFutureBookingsForBooker(bookerId, BookingStatus.APPROVED);
+            case BookingState.WAITING ->
+                    bookingRepository.findWaitingBookingsForBooker(bookerId, BookingStatus.WAITING);
+            case BookingState.REJECTED ->
+                    bookingRepository.findRejectedBookingsForBooker(bookerId, BookingStatus.CANCELED);
+            case null, default ->
+                    bookingRepository.findAllBookingsForBooker(bookerId);
+        };
         return bookingList
                 .stream()
                 .map(BookingMapper::mapToBookingDto)
@@ -83,20 +82,20 @@ public class BookingServiceImpl implements BookingService {
         userRepository.findById(ownerId)
                 .orElseThrow(() ->
                         new NotFoundException("User with id " + ownerId + " was not found"));
-        List<Booking> bookingList = new ArrayList<>();
-        if (state == null || state.equals(BookingState.ALL)) {
-            bookingList = bookingRepository.findAllBookingsForOwner(ownerId);
-        } else if (state.equals(BookingState.CURRENT)) {
-            bookingList = bookingRepository.findCurrentBookingsForOwner(ownerId, BookingStatus.APPROVED);
-        } else if (state.equals(BookingState.PAST)) {
-            bookingList = bookingRepository.findPastBookingsForOwner(ownerId, BookingStatus.APPROVED);
-        } else if (state.equals(BookingState.FUTURE)) {
-            bookingList = bookingRepository.findFutureBookingsForOwner(ownerId, BookingStatus.APPROVED);
-        } else if (state.equals(BookingState.WAITING)) {
-            bookingList = bookingRepository.findWaitingBookingsForOwner(ownerId, BookingStatus.WAITING);
-        } else if (state.equals(BookingState.REJECTED)) {
-            bookingList = bookingRepository.findRejectedBookingsForOwner(ownerId, BookingStatus.CANCELED);
-        }
+        List<Booking> bookingList = switch (state) {
+            case BookingState.CURRENT ->
+                    bookingRepository.findCurrentBookingsForOwner(ownerId, BookingStatus.APPROVED);
+            case BookingState.PAST ->
+                    bookingRepository.findPastBookingsForOwner(ownerId, BookingStatus.APPROVED);
+            case BookingState.FUTURE ->
+                    bookingRepository.findFutureBookingsForOwner(ownerId, BookingStatus.APPROVED);
+            case BookingState.WAITING ->
+                    bookingRepository.findWaitingBookingsForOwner(ownerId, BookingStatus.WAITING);
+            case BookingState.REJECTED ->
+                    bookingRepository.findRejectedBookingsForOwner(ownerId, BookingStatus.CANCELED);
+            case null, default ->
+                    bookingRepository.findAllBookingsForOwner(ownerId);
+        };
         return bookingList
                 .stream()
                 .map(BookingMapper::mapToBookingDto)

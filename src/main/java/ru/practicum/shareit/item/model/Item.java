@@ -9,7 +9,6 @@ import ru.practicum.shareit.user.User;
 @Table(name = "items")
 @Getter
 @Setter
-
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +23,7 @@ public class Item {
     @Column(nullable = false)
     private Boolean available;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private User owner;
 }

@@ -15,7 +15,7 @@ public interface DatabaseBookingRepository extends BookingRepository, JpaReposit
     @Query("""
             SELECT boo
             FROM Booking AS boo
-            WHERE boo.booker.id = ?1
+            WHERE boo.booker.id = :bookerId
             ORDER BY boo.start DESC
             """)
     List<Booking> findAllBookingsForBooker(Long bookerId);
@@ -24,7 +24,7 @@ public interface DatabaseBookingRepository extends BookingRepository, JpaReposit
     @Query("""
             SELECT boo
             FROM Booking AS boo
-            WHERE boo.item.owner.id = ?1
+            WHERE boo.item.owner.id = :ownerId
             ORDER BY boo.start DESC
             """)
     List<Booking> findAllBookingsForOwner(Long ownerId);
@@ -33,9 +33,9 @@ public interface DatabaseBookingRepository extends BookingRepository, JpaReposit
     @Query("""
             SELECT boo
             FROM Booking AS boo
-            WHERE boo.booker.id = ?1
+            WHERE boo.booker.id = :bookerId
             AND
-            boo.status = ?2
+            boo.status = :status
             AND
             CURRENT_TIMESTAMP BETWEEN boo.start AND boo.end
             ORDER BY boo.start DESC
@@ -46,9 +46,9 @@ public interface DatabaseBookingRepository extends BookingRepository, JpaReposit
     @Query("""
             SELECT boo
             FROM Booking AS boo
-            WHERE boo.item.owner.id = ?1
+            WHERE boo.item.owner.id = :ownerId
             AND
-            boo.status = ?2
+            boo.status = :status
             AND
             CURRENT_TIMESTAMP BETWEEN boo.start AND boo.end
             ORDER BY boo.start DESC
@@ -59,9 +59,9 @@ public interface DatabaseBookingRepository extends BookingRepository, JpaReposit
     @Query("""
             SELECT boo
             FROM Booking AS boo
-            WHERE boo.booker.id = ?1
+            WHERE boo.booker.id = :bookerId
             AND
-            boo.status = ?2
+            boo.status = :status
             AND
             CURRENT_TIMESTAMP > boo.end
             ORDER BY boo.start DESC
@@ -72,9 +72,9 @@ public interface DatabaseBookingRepository extends BookingRepository, JpaReposit
     @Query("""
             SELECT boo
             FROM Booking AS boo
-            WHERE boo.item.owner.id = ?1
+            WHERE boo.item.owner.id = :ownerId
             AND
-            boo.status = ?2
+            boo.status = :status
             AND
             CURRENT_TIMESTAMP > boo.end
             ORDER BY boo.start DESC
@@ -85,9 +85,9 @@ public interface DatabaseBookingRepository extends BookingRepository, JpaReposit
     @Query("""
             SELECT boo
             FROM Booking AS boo
-            WHERE boo.booker.id = ?1
+            WHERE boo.booker.id = :bookerId
             AND
-            boo.status = ?2
+            boo.status = :status
             AND
             CURRENT_TIMESTAMP < boo.start
             ORDER BY boo.start DESC
@@ -98,9 +98,9 @@ public interface DatabaseBookingRepository extends BookingRepository, JpaReposit
     @Query("""
             SELECT boo
             FROM Booking AS boo
-            WHERE boo.item.owner.id = ?1
+            WHERE boo.item.owner.id = :ownerId
             AND
-            boo.status = ?2
+            boo.status = :status
             AND
             CURRENT_TIMESTAMP < boo.start
             ORDER BY boo.start DESC
@@ -111,9 +111,9 @@ public interface DatabaseBookingRepository extends BookingRepository, JpaReposit
     @Query("""
             SELECT boo
             FROM Booking AS boo
-            WHERE boo.booker.id = ?1
+            WHERE boo.booker.id = :bookerId
             AND
-            boo.status = ?2
+            boo.status = :status
             ORDER BY boo.start DESC
             """)
     List<Booking> findWaitingBookingsForBooker(Long bookerId, BookingStatus status);
@@ -122,9 +122,9 @@ public interface DatabaseBookingRepository extends BookingRepository, JpaReposit
     @Query("""
             SELECT boo
             FROM Booking AS boo
-            WHERE boo.item.owner.id = ?1
+            WHERE boo.item.owner.id = :ownerId
             AND
-            boo.status = ?2
+            boo.status = :status
             ORDER BY boo.start DESC
             """)
     List<Booking> findWaitingBookingsForOwner(Long ownerId, BookingStatus status);
@@ -133,9 +133,9 @@ public interface DatabaseBookingRepository extends BookingRepository, JpaReposit
     @Query("""
             SELECT boo
             FROM Booking AS boo
-            WHERE boo.booker.id = ?1
+            WHERE boo.booker.id = :bookerId
             AND
-            boo.status = ?2
+            boo.status = :status
             ORDER BY boo.start DESC
             """)
     List<Booking> findRejectedBookingsForBooker(Long bookerId, BookingStatus status);
@@ -144,9 +144,9 @@ public interface DatabaseBookingRepository extends BookingRepository, JpaReposit
     @Query("""
             SELECT boo
             FROM Booking AS boo
-            WHERE boo.item.owner.id = ?1
+            WHERE boo.item.owner.id = :ownerId
             AND
-            boo.status = ?2
+            boo.status = :status
             ORDER BY boo.start DESC
             """)
     List<Booking> findRejectedBookingsForOwner(Long ownerId, BookingStatus status);
@@ -155,9 +155,9 @@ public interface DatabaseBookingRepository extends BookingRepository, JpaReposit
     @Query("""
             SELECT boo
             FROM Booking AS boo
-            WHERE boo.item.id = ?1
+            WHERE boo.item.id = :itemId
             AND
-            boo.status = ?2
+            boo.status = :status
             AND
             CURRENT_TIMESTAMP > boo.end
             ORDER BY boo.end DESC
@@ -169,9 +169,9 @@ public interface DatabaseBookingRepository extends BookingRepository, JpaReposit
     @Query("""
             SELECT boo
             FROM Booking AS boo
-            WHERE boo.item.id = ?1
+            WHERE boo.item.id = :itemId
             AND
-            boo.status = ?2
+            boo.status = :status
             AND
             CURRENT_TIMESTAMP < boo.start
             ORDER BY boo.start ASC
