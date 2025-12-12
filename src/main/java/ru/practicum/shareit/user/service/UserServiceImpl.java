@@ -21,29 +21,29 @@ public class UserServiceImpl implements UserService {
         if (isEmailOccupied(user)) {
             throw new ConflictException("User with email " + user.getEmail() + " already exist");
         }
-        user = userRepository.create(user);
+        user = userRepository.save(user);
         return UserMapper.mapToUserDto(user);
     }
 
     public UserDto read(Long id) {
-        return userRepository.read(id)
+        return userRepository.findById(id)
                 .map(UserMapper::mapToUserDto)
                 .orElseThrow(() -> new NotFoundException("User with id " + id + " does not exist"));
     }
 
     public UserDto update(Long id, UpdateUserRequest request) {
-        User updatedUser = userRepository.read(id)
+        User updatedUser = userRepository.findById(id)
                 .map(user -> UserMapper.updateUser(user, request))
                 .orElseThrow(() -> new NotFoundException("User with id " + id + " does not exist"));
         if (isEmailOccupied(updatedUser)) {
             throw new ConflictException("User with email " + updatedUser.getEmail() + " already exist");
         }
-        updatedUser = userRepository.update(updatedUser);
+        updatedUser = userRepository.save(updatedUser);
         return UserMapper.mapToUserDto(updatedUser);
     }
 
     public void delete(Long id) {
-        userRepository.delete(id);
+        userRepository.deleteById(id);
     }
 
     private boolean isEmailOccupied(User user) {
@@ -55,6 +55,6 @@ public class UserServiceImpl implements UserService {
     }
 
     public boolean isUserExist(Long id) {
-        return userRepository.read(id).isPresent();
+        return userRepository.findById(id).isPresent();
     }
 }
