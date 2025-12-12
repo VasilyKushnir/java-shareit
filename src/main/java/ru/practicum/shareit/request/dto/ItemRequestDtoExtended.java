@@ -5,12 +5,14 @@ import lombok.Value;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Value
 @Builder(toBuilder = true)
-public class ItemRequestDto {
+public class ItemRequestDtoExtended {
     Long id;
     String description;
     UserDto requestor;
     LocalDateTime created;
+    List<ItemRequestDtoExtendedDetails> items;
 }
