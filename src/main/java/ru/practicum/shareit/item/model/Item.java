@@ -26,4 +26,7 @@ public class Item {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private User owner;
+
+
+    private Long requestId;
 }

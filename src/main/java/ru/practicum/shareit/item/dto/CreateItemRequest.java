@@ -14,4 +14,6 @@ public class CreateItemRequest {
 
     @NotNull(message = "Status must be presented")
     Boolean available;
+
+    Long requestId;
 }

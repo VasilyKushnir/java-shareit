@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS items (
     description VARCHAR(522) NOT NULL,
     available BOOLEAN NOT NULL,
     owner_id BIGINT NOT NULL REFERENCES users ON DELETE CASCADE,
+    request_id BIGINT,
     CONSTRAINT pk_item PRIMARY KEY (id)
 );
 

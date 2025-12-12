@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dal.ItemRepository;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.request.dal.ItemRequestRepository;
 import ru.practicum.shareit.request.dto.CreateItemRequest;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ItemRequestServiceImpl implements ItemRequestService {
     private final UserRepository userRepository;
+    private final ItemRepository itemRepository;
     private final ItemRequestRepository itemRequestRepository;
 
     @Override
@@ -33,16 +35,29 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ItemRequestDtoExtended> getMyRequests(Long requestorId) {
-        return List.of();
+        return itemRequestRepository.findByRequestorIdOrderByCreated(requestorId)
+                .stream()
+                .map(i -> {
+                    List<Item> itemList = itemRepository.findByRequestId(i.getId());
+                    return ItemRequestMapper.mapToItemRequestDtoExtended(i, itemList);
+                })
+                .toList();
     }
 
     @Override
     public List<ItemRequestDto> getAllRequests() {
-        return List.of();
+        return itemRequestRepository.findByOrderByCreated()
+                .stream()
+                .map(ItemRequestMapper::mapToItemRequestDto)
+                .toList();
     }
 
     @Override
     public ItemRequestDtoExtended getSpecificRequest(Long requestId) {
-        return null;
+        ItemRequest itemRequest = itemRequestRepository.findById(requestId)
+                .orElseThrow(() ->
+                        new NotFoundException("Request with id " + requestId + " was not found"));
+        List<Item> itemList = itemRepository.findByRequestId(itemRequest.getId());
+        return ItemRequestMapper.mapToItemRequestDtoExtended(itemRequest, itemList);
     }
 }

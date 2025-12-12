@@ -12,6 +12,7 @@ public class ItemMapper {
         item.setName(request.getName());
         item.setDescription(request.getDescription());
         item.setAvailable(request.getAvailable());
+        item.setRequestId(request.getRequestId());
         return item;
     }
 

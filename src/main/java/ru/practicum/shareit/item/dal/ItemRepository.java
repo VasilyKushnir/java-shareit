@@ -13,4 +13,6 @@ public interface ItemRepository {
     List<Item> findByOwnerId(Long id);
 
     List<Item> searchItems(Long id, String text);
+
+    List<Item> findByRequestId(Long id);
 }
