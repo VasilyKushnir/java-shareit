@@ -15,4 +15,6 @@ public interface ItemRepository {
     List<Item> searchItems(Long id, String text);
 
     List<Item> findByRequestId(Long id);
+
+    List<Item> findByRequestIdIn(List<Long> idList);
 }

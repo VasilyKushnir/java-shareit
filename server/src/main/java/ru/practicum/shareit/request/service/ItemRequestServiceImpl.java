@@ -14,6 +14,7 @@ import ru.practicum.shareit.request.dto.ItemRequestMapper;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dal.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -35,11 +36,17 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ItemRequestDtoExtended> getMyRequests(Long requestorId) {
-        return itemRequestRepository.findByRequestorIdOrderByCreated(requestorId)
-                .stream()
-                .map(i -> {
-                    List<Item> itemList = itemRepository.findByRequestId(i.getId());
-                    return ItemRequestMapper.mapToItemRequestDtoExtended(i, itemList);
+        List<ItemRequest> itemRequestList = itemRequestRepository.findByRequestorIdOrderByCreated(requestorId);
+        List<Long> itemIdList = itemRequestList.stream()
+                .map(ItemRequest::getId)
+                .toList();
+        List<Item> itemList = itemRepository.findByRequestIdIn(itemIdList);
+        return itemRequestList.stream()
+                .map(r -> {
+                    List<Item> itemListForRequest = itemList.stream()
+                            .filter(i -> i.getRequestId().equals(r.getId()))
+                            .toList();
+                    return ItemRequestMapper.mapToItemRequestDtoExtended(r, itemListForRequest);
                 })
                 .toList();
     }
