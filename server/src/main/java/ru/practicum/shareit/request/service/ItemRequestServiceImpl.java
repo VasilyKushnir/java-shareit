@@ -14,7 +14,6 @@ import ru.practicum.shareit.request.dto.ItemRequestMapper;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dal.UserRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
