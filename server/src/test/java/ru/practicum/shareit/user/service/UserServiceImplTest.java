@@ -47,7 +47,7 @@ public class UserServiceImplTest {
     void read_ShouldThrowException_IfNotExist() {
         UserDto userDto = userService.create(request);
         assertThrows(NotFoundException.class, () ->
-                userService.read(userDto.getId()+1));
+                userService.read(userDto.getId() + 1));
     }
 
     @Test
