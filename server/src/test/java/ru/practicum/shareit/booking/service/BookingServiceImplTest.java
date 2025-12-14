@@ -89,7 +89,7 @@ public class BookingServiceImplTest {
         UserDto userDto2 = userService.create(createUserRequest2);
         CreateBookingRequest createBookingRequest = new CreateBookingRequest(
                 itemDto.getId(),
-                LocalDateTime.now(), LocalDateTime.now()
+                LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(1)
         );
 
         assertThrows(ValidationException.class,
