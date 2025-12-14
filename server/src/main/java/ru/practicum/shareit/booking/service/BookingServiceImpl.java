@@ -67,7 +67,7 @@ public class BookingServiceImpl implements BookingService {
             case BookingState.WAITING ->
                     bookingRepository.findWaitingBookingsForBooker(bookerId, BookingStatus.WAITING);
             case BookingState.REJECTED ->
-                    bookingRepository.findRejectedBookingsForBooker(bookerId, BookingStatus.CANCELED);
+                    bookingRepository.findRejectedBookingsForBooker(bookerId, BookingStatus.REJECTED);
             case null, default ->
                     bookingRepository.findAllBookingsForBooker(bookerId);
         };
@@ -92,7 +92,7 @@ public class BookingServiceImpl implements BookingService {
             case BookingState.WAITING ->
                     bookingRepository.findWaitingBookingsForOwner(ownerId, BookingStatus.WAITING);
             case BookingState.REJECTED ->
-                    bookingRepository.findRejectedBookingsForOwner(ownerId, BookingStatus.CANCELED);
+                    bookingRepository.findRejectedBookingsForOwner(ownerId, BookingStatus.REJECTED);
             case null, default ->
                     bookingRepository.findAllBookingsForOwner(ownerId);
         };

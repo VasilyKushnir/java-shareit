@@ -17,6 +17,7 @@ import ru.practicum.shareit.user.service.UserService;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -147,4 +148,65 @@ public class ItemServiceImplTest {
         ItemDtoExtended itemDtoExtended = itemService.read(userDto.getId(), itemDto.getId());
         assertNotNull(itemDtoExtended.getId());
     }
+
+    @Test
+    void readUserItems_ShouldReturnList() {
+        CreateUserRequest createUserRequest = new CreateUserRequest("John", "email@sample.com");
+        UserDto userDto = userService.create(createUserRequest);
+        CreateItemRequest createItemRequest = new CreateItemRequest(
+                "name", "description", true, null
+        );
+        ItemDto itemDto = itemService.create(userDto.getId(), createItemRequest);
+        CreateItemRequest createItemRequest2 = new CreateItemRequest(
+                "name2", "description2", true, null
+        );
+        ItemDto itemDto2 = itemService.create(userDto.getId(), createItemRequest);
+        List<ItemDto> itemDtoList = itemService.readUserItems(userDto.getId());
+        assertEquals(2, itemDtoList.size());
+    }
+
+    @Test
+    void searchItems_ShouldReturnList() {
+        CreateUserRequest createUserRequest = new CreateUserRequest("John", "email@sample.com");
+        UserDto userDto = userService.create(createUserRequest);
+        CreateItemRequest createItemRequest = new CreateItemRequest(
+                "name", "description", true, null
+        );
+        CreateItemRequest createItemRequest2 = new CreateItemRequest(
+                "name2", "description2", true, null
+        );
+        itemService.create(userDto.getId(), createItemRequest);
+        itemService.create(userDto.getId(), createItemRequest2);
+        List<ItemDto> itemDtoList = itemService.searchItems(userDto.getId(), "ion2");
+        assertEquals(1, itemDtoList.size());
+    }
+
+    @Test
+    void update_ShouldUpdate() {
+        CreateUserRequest createUserRequest = new CreateUserRequest("John", "email@sample.com");
+        UserDto userDto = userService.create(createUserRequest);
+        CreateItemRequest createItemRequest = new CreateItemRequest(
+                "name", "description", true, null
+        );
+        ItemDto itemDto = itemService.create(userDto.getId(), createItemRequest);
+
+        UpdateItemRequest updateItemRequest = new UpdateItemRequest(
+                "updatedName", "updatedDescription", true
+        );
+        itemService.update(userDto.getId(), itemDto.getId(), updateItemRequest);
+        List<ItemDto> itemDtoList = itemService.readUserItems(userDto.getId());
+
+        assertEquals(1, itemDtoList.size());
+        assertEquals("updatedName", itemDtoList.getFirst().getName());
+    }
+//
+//    @Test
+//    void update_ShouldNotUpdate_IfItemNotFound() {
+//
+//    }
+//
+//    @Test
+//    void update_ShouldNotUpdate_IfUserDoNotOwnItem() {
+//
+//    }
 }
